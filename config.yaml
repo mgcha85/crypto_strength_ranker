@@ -1,0 +1,26 @@
+symbols:
+  - BTCUSDT
+  - ETHUSDT
+  - SOLUSDT
+  - XRPUSDT
+  - DOGEUSDT
+  - BNBUSDT
+  - SUIUSDT
+  - LTCUSDT
+  - KAITOUSDT
+  - SANDUSDT
+  - BCHUSDT
+  - ADAUSDT
+  - WLDUSDT
+  - RENDERUSDT
+  - LINKUSDT
+  - AVAXUSDT
+
+
+intervals:
+  - 1m
+  - 5m
+  - 15m
+  - 1h
+
+limit: 400
