@@ -19,8 +19,8 @@ def main():
                 print(f"❌ Failed to fetch {symbol}: {e}")
         
         ranking = compute_strength(symbol_dfs)
-        for rank, (symbol, strength) in enumerate(ranking, start=1):
-            print(f"{rank:2d}. {symbol}: {strength:.2%}")
+        for i, r in enumerate(ranking, 1):
+            print(f"{i:2d}. {r['symbol']:<8} | Return: {r['return']:.2%} | Disparity: {r['disparity']:.2%} | Score: {r['score']:.2%}")
 
 
 if __name__ == "__main__":
