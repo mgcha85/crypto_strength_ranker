@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 
 KST = timezone(timedelta(hours=9))
 
-def fetch_binance_klines(symbol, interval, limit=400):
+def fetch_binance_klines(symbol, interval, limit=200):
     url = f"https://api.binance.com/api/v3/klines"
     params = {"symbol": symbol, "interval": interval, "limit": limit}
     response = requests.get(url, params=params)

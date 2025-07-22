@@ -15,12 +15,13 @@ symbols:
   - RENDERUSDT
   - LINKUSDT
   - AVAXUSDT
+  - TRUMPUSDT
 
 
 intervals:
   - 1m
   - 5m
   - 15m
-  - 1h
 
-limit: 400
+limit: 200
+target: ETHUSDT
