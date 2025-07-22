@@ -80,13 +80,14 @@ def compute_strength(symbol_dfs, weight_return=0.5, weight_disparity=0.5):
     return sorted_results
 
 
-def find_improved_symbols(rankings):
+def find_improved_symbols(rankings, improve_intervals):
     """
     rankings: dict of { interval_str: [ { 'symbol', 'return', 'disparity', 'score' }, … ] }
-    반환값: 15m→5m→1m 순으로 랭킹 위치가 내려가고(score는 올랐고) score도 연속 상승한 심볼 리스트
+    improve_intervals: 순서를 보장하는 list, e.g. ["15m","5m","1m"] 또는 ["5m","1m"]
+    → 해당 순서대로 rank는 내려가고(score 순위는 좋아지고), score는 오르는 심볼 필터링
     """
-    # symbol별로 각 인터벌의 rank, score 저장
     meta = {}
+    # 각 심볼별로 rank_<interval>, score_<interval> 저장
     for interval, ranking in rankings.items():
         for pos, r in enumerate(ranking, start=1):
             sym = r['symbol']
@@ -96,16 +97,17 @@ def find_improved_symbols(rankings):
 
     result = []
     for sym, vals in meta.items():
-        # 모든 인터벌 데이터가 있는지 확인
-        if all(f'rank_{i}' in vals and f'score_{i}' in vals for i in ("15m","5m","1m")):
-            r15, r5, r1 = vals['rank_15m'], vals['rank_5m'], vals['rank_1m']
-            s15, s5, s1 = vals['score_15m'], vals['score_5m'], vals['score_1m']
-            # 랭킹 위치가 좋아지고(score는 올랐다고 가정) 점수도 상승
-            if (r15 > r5 > r1) and (s15 < s5 < s1):
+        # 모든 필요한 인터벌 데이터가 있는지
+        if all(f"rank_{i}" in vals and f"score_{i}" in vals for i in improve_intervals):
+            ranks = [vals[f"rank_{i}"] for i in improve_intervals]
+            scores= [vals[f"score_{i}"] for i in improve_intervals]
+            # rank는 (앞 > 뒤 > ...) and score는 (앞 < 뒤 < ...)
+            rank_ok  = all(ranks[i] > ranks[i+1] for i in range(len(ranks)-1))
+            score_ok = all(scores[i] < scores[i+1] for i in range(len(scores)-1))
+            if rank_ok and score_ok:
                 result.append({
                     'symbol': sym,
-                    'ranks': (r15, r5, r1),
-                    'scores': (s15, s5, s1),
+                    'ranks': tuple(ranks),
+                    'scores': tuple(scores),
                 })
     return result
-

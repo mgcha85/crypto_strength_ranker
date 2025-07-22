@@ -7,6 +7,7 @@ def main():
     symbols = config["symbols"]
     intervals = config["intervals"]  # e.g. ["15m","5m","1m"]
     limit = config["limit"]
+    improve_intervals = config.get("improve_intervals", intervals)
 
     # 1) 우선 15m 상관관계 필터링 (기존 로직)
     symbol_dfs = {}
@@ -37,13 +38,15 @@ def main():
                   f"| Disparity: {r['disparity']:.2%} | Score: {r['score']:.2%}")
 
     # 3) 15m→5m→1m 순으로 랭킹과 Score가 모두 개선된 심볼 찾기
-    improved = find_improved_symbols(rankings)
+    improved = find_improved_symbols(rankings, improve_intervals)
     if improved:
-        print("\n▶ Symbols with improved rank & rising Score (15m → 5m → 1m):")
+        seq = " → ".join(improve_intervals)
+        print(f"\n▶ Symbols improved in order ({seq}):")
         for item in improved:
-            s, (r15,r5,r1), (s15,s5,s1) = item['symbol'], item['ranks'], item['scores']
-            print(f"- {s}: ranks {r15}→{r5}→{r1}, scores "
-                  f"{s15:.2%}→{s5:.2%}→{s1:.2%}")
+            s       = item['symbol']
+            ranks   = "→".join(map(str, item['ranks']))
+            scores  = "→".join(f"{v:.2%}" for v in item['scores'])
+            print(f"- {s}: ranks {ranks}, scores {scores}")
     else:
         print("\n▶ No symbols found with both rank & score improvement.")
 

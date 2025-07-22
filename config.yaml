@@ -23,5 +23,9 @@ intervals:
   - 5m
   - 15m
 
+improve_intervals:
+  - "5m"
+  - "1m"
+
 limit: 200
 target: ETHUSDT
